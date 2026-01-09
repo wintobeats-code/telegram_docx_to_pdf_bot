@@ -1,0 +1,19 @@
+[project]
+name = "telegram-docx-to-pdf-bot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "alembic>=1.17.2",
+    "dotenv>=0.9.9",
+    "psycopg2-binary>=2.9.11",
+    "pytelegrambotapi==4.29.1",
+    "python-dotenv>=1.2.1",
+    "sqlalchemy>=2.0.45",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.9",
+]
