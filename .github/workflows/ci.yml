@@ -14,7 +14,10 @@ jobs:
         with:
           python-version: "3.14"
           cache: "pip"
-
+      
+      - name: Install dependencies
+        run: pip install pytelegrambotapi python-dotenv sqlalchemy alembic
+      
       - name: Install pylint
         run: pip install pylint
 
