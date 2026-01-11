@@ -9,16 +9,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
         with:
-          python-version: '3.14'
+          enable-cache: true
 
-      - name: Install pylint
-        run: pip install pylint
+      - name: Set up Python
+        run: uv python install 3.14
+
+      - name: Install dependencies from uv.lock
+        run: uv sync --frozen --all-extras --dev
 
       - name: Run pylint
-        run: pylint *.py
+        run: uv run pylint *.py
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -31,7 +34,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push to ghcr.io
         uses: docker/build-push-action@v6
