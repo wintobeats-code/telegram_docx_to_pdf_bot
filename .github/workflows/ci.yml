@@ -9,6 +9,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       
+      - name: Sync with uv
+        uses: astral-sh/uv-pip-install@v3
+        with:
+          path: .
+          args: uv sync
+      
       - name: Run pylint
         run: pylint *.py
 
