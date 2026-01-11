@@ -8,13 +8,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: Sync with uv
-        uses: astral-sh/uv-pip-install@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          path: .
-          args: uv sync
-      
+          python-version: '3.14'
+
+      - name: Install pylint
+        run: pip install pylint
+
       - name: Run pylint
         run: pylint *.py
 
@@ -36,5 +38,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
-                ghcr.io/${{ github.repository }}:${{ github.sha }}
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
