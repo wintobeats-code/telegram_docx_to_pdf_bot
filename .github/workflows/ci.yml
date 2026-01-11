@@ -17,8 +17,8 @@ jobs:
       - name: Set up Python
         run: uv python install 3.14
 
-      - name: Install dependencies from uv.lock
-        run: uv sync --frozen --all-extras --dev
+      - name: Install pylint
+        run: uv pip install pylint
 
       - name: Run pylint
         run: uv run pylint *.py
