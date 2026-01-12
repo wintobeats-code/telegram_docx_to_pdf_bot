@@ -1,3 +1,4 @@
+"""Модуль для настройки подключения к базе данных и управления сессиями."""
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
@@ -13,25 +14,10 @@ engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# def get_alembic_config(self):
-#     config = Config()
-#     config.set_main_option("script_location", "alembic")
-#     config.set_main_option("sqlalchemy.url", DATABASE_URL)
-#     return config
-    
-# def create_revision(self, message: str, autogenerate: bool = True):
-#     config = self.get_alembic_config()
-#     command.revision(config, autogenerate=autogenerate, message=message)
-    
-# def migrate_up(self, revision: str = "head"):
-#    config = self.get_alembic_config()
-#    command.upgrade(config, revision)
-
 def get_db():
+    """Создаёт и возвращает новую сессию SQLAlchemy."""
     dbsession = SessionLocal()
     try:
         yield dbsession
     finally:
         dbsession.close()
-
-

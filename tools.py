@@ -14,9 +14,9 @@ def docx2pdf(input_path: str, output_path: str) -> bool:
 
         if result.returncode == 0:
             return os.path.exists(output_path)
-        else:
-            error("Ошибка LibreOffice: %result.stderr")
-            return False
+        
+        error("Ошибка LibreOffice: %s", result.stderr)
+        return False
 
     except TimeoutExpired as te:
         error("Конвертация файла %s заняла слишком много времени: %s", input_path, te)

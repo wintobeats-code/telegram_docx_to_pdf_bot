@@ -57,7 +57,7 @@ def handle_document(message: any) -> None:
         remove_file(docx_path)
         remove_file(pdf_path)
 
-    except Exception as e: 
+    except Exception as e:
         error('Ошибка при обработке документа: %s', e)
         bot.send_message(message.chat.id, "Произошла ошибка при обработке файла: %s", e)
         raise

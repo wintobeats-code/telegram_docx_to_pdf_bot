@@ -1,7 +1,9 @@
 """Таблицы для БД"""
-from sqlalchemy import DateTime, ForeignKey, String, Integer
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+# pylint: disable=too-few-public-methods
 from datetime import datetime
+from sqlalchemy import ForeignKey, String, Integer
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+
 
 
 class Base(DeclarativeBase):
