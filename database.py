@@ -3,8 +3,6 @@ import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from alembic import command
-from models import Base
 
 load_dotenv()
 
@@ -12,11 +10,11 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 
 engine = create_engine(DATABASE_URL)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+sessionlocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
     """Создаёт и возвращает новую сессию SQLAlchemy."""
-    dbsession = SessionLocal()
+    dbsession = sessionlocal()
     try:
         yield dbsession
     finally:

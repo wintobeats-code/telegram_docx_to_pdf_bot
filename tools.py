@@ -14,7 +14,6 @@ def docx2pdf(input_path: str, output_path: str) -> bool:
 
         if result.returncode == 0:
             return os.path.exists(output_path)
-        
         error("Ошибка LibreOffice: %s", result.stderr)
         return False
 
