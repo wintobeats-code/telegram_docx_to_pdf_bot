@@ -5,6 +5,7 @@ from sqlalchemy import ForeignKey, String, Integer
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 class Base(DeclarativeBase):
+    """Маппинг"""
     pass
 
 class User(Base):
@@ -33,8 +34,3 @@ class ConversionStatus(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key = True)
     status_name: Mapped[str] = mapped_column(String(50), unique=True)
     conversions: Mapped[list["Conversion"]] = relationship(back_populates="status")
-
-
-
-
-
