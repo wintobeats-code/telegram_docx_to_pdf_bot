@@ -2,6 +2,10 @@ name: telegram_docx_to_pdf_bot
 
 on: [push]
 
+permissions:
+  packages: write
+  contents: read
+
 jobs:
   docker:
     runs-on: ubuntu-latest
