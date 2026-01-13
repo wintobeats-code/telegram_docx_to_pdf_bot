@@ -13,8 +13,6 @@ RUN apt-get -y update &&  \
     -y libreoffice ca-certificates && update-ca-certificates \
     rm -rf /var/lib/apt/lists/*
 
-#COPY pyproject.toml uv.lock ./
-
 COPY . .
 
 ENV PYTHONPATH=/app/.venv/lib/python3.14/site-packages
@@ -24,6 +22,4 @@ RUN uv sync --no-dev --locked --no-editable --python python3.14
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-
-#CMD ["/app/.venv/bin/python", "bot.py"]
 

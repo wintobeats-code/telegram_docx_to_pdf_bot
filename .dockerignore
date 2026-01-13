@@ -2,3 +2,6 @@
 temp/
 *.env
 .venv
+docker-compose.yml
+Dockerfile
+.github

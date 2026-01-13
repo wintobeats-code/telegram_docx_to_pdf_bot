@@ -29,4 +29,4 @@ def remove_file(path: str):
     try:
         os.remove(path)
     except OSError as oe:
-        error('Не удалось удалить файл %path: %s', oe)
+        error('Не удалось удалить файл: %s', oe)
