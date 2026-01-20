@@ -1,5 +1,118 @@
 """инициализация таблиц в бд"""
-from database import engine
-from models import Base
+"""Работа с базой данных: Unit of Work, репозиторий и бизнес-функции"""
+from abc import ABC, abstractmethod
+from contextlib import contextmanager
+from typing import Optional
+from sqlalchemy.orm import Session
+from logging import info, error
+import datetime
+from db_models import Base
+from db_models import User, Conversion, ConversionStatus
+from db_sessions import sessionlocal
+from db_sessions import engine
+
+
+class AbstractRepository(ABC):
+    @abstractmethod
+    def add(self, obj): ...
+    @abstractmethod
+    def get_by_telegram_id(self, telegram_id: int) -> Optional[User]: ...
+    @abstractmethod
+    def get_status_by_name(self, name: str) -> Optional[ConversionStatus]: ...
+
+
+class SqlAlchemyRepository(AbstractRepository):
+    def __init__(self, session: Session):
+        self.session = session
+
+    def add(self, obj):
+        self.session.add(obj)
+
+    def get_by_telegram_id(self, telegram_id: int) -> Optional[User]:
+        return self.session.query(User).filter(User.telegram_id == telegram_id).first()
+
+    def get_status_by_name(self, name: str) -> Optional[ConversionStatus]:
+        return self.session.query(ConversionStatus).filter_by(status_name=name).first()
+
+
+class UnitOfWork:
+    def __init__(self, session_factory=sessionlocal):
+        self.session_factory = session_factory
+        self.session: Optional[Session] = None
+        self.repo: Optional[SqlAlchemyRepository] = None
+
+    @contextmanager
+    def __call__(self):
+        self.session = self.session_factory()
+        self.repo = SqlAlchemyRepository(self.session)
+        try:
+            yield self
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
+        finally:
+            self.session.close()
+
+
+def intermediate_status(user_id: int, original_file_id: str, status_name: str) -> int:
+    """Создаёт запись о конвертации с заданным статусом и создаёт пользователя при необходимости"""
+    uow = UnitOfWork()
+    with uow():
+        user = uow.repo.get_by_telegram_id(user_id)
+        if not user:
+            user = User(telegram_id=user_id, username=None)
+            uow.repo.add(user)
+            uow.session.flush()
+
+        status = uow.repo.get_status_by_name(status_name)
+        if not status:
+            raise RuntimeError(f"Статус '{status_name}' не найден в таблице conversion_status")
+
+        conversion = Conversion(
+            user_id=user.id,
+            file_id=original_file_id,
+            pdf_file_id=None,
+            status_id=status.id,
+            created_at=datetime.datetime.now()
+        )
+        uow.repo.add(conversion)
+        return conversion.id
+
+
+def save_info_db(
+    user_id: int,
+    username: str | None,
+    original_file_id: str,
+    pdf_file_id: str | None,
+    timestamp: datetime.datetime,
+    status_name: str
+):
+    uow = UnitOfWork()
+    with uow():
+        user = uow.repo.get_by_telegram_id(user_id)
+        if user:
+            if user.username != username:
+                user.username = username
+            user_db_id = user.id
+        else:
+            user = User(telegram_id=user_id, username=username)
+            uow.repo.add(user)
+            uow.session.flush()
+            user_db_id = user.id
+
+        status = uow.repo.get_status_by_name(status_name)
+        if not status:
+            raise RuntimeError(f"Статус '{status_name}' не найден в таблице conversion_status")
+
+        conversion = Conversion(
+            user_id=user_db_id,
+            file_id=original_file_id,
+            pdf_file_id=pdf_file_id,
+            status_id=status.id,
+            created_at=timestamp
+        )
+        uow.repo.add(conversion)
+        info("Запись сохранена в БД")
 
 Base.metadata.create_all(bind=engine)

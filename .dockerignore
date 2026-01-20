@@ -5,3 +5,4 @@ temp/
 docker-compose.yml
 Dockerfile
 .github
+README.md

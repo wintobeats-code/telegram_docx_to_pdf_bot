@@ -11,11 +11,3 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 engine = create_engine(DATABASE_URL)
 
 sessionlocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-def get_db():
-    """Создаёт и возвращает новую сессию SQLAlchemy."""
-    dbsession = sessionlocal()
-    try:
-        yield dbsession
-    finally:
-        dbsession.close()

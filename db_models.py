@@ -15,6 +15,10 @@ class User(Base):
     username: Mapped[str | None] = mapped_column(String(255), nullable=True)
     conversions: Mapped[list["Conversion"]] = relationship("Conversion", back_populates="user")
 
+    def __str__(self):
+        """Юзернейм в строку для выводу в Flask Admin"""
+        return self.username
+
 class Conversion(Base):
     """Модель конвертаций"""
     __tablename__ = 'conversions'
@@ -26,6 +30,11 @@ class Conversion(Base):
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
     user: Mapped["User"] = relationship(back_populates="conversions")
     status: Mapped["ConversionStatus"] = relationship(back_populates="conversions")
+
+    def __str__(self):
+        """Имя статуса в строку для Flask Admin"""
+        return self.status_name
+
 
 class ConversionStatus(Base):
     "Модель статусов конвертаций"

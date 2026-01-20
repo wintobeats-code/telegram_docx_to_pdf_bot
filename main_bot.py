@@ -8,7 +8,8 @@ import telebot
 from telebot.types import User
 from dotenv import load_dotenv
 from tools_bot import remove_file, docx2pdf
-from save_info_db_bot import save_info_db
+from db_main import save_info_db
+from db_main import intermediate_status
 
 basicConfig(level=INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -46,6 +47,7 @@ def handle_document(message: any) -> None:
         original_file_id = doc.file_id 
         
         file_info = bot.get_file(doc.file_id)
+        intermediate_status(user_id, original_file_id, "pending", datetime.datetime.now)
         file_content = bot.download_file(file_info.file_path)
 
         docx_path = os.path.join(tmp, doc.file_name)
@@ -56,6 +58,9 @@ def handle_document(message: any) -> None:
 
         bot.send_message(message.chat.id, "Конвертирую...")
 
+
+        intermediate_status(user_id, original_file_id, "processing", datetime.datetime.now)
+
         if docx2pdf(docx_path, pdf_path):
             with open(pdf_path, 'rb') as f:
                 sent_message=bot.send_document(message.chat.id, f)
@@ -65,14 +70,18 @@ def handle_document(message: any) -> None:
             username=username,
             original_file_id=original_file_id,
             pdf_file_id=pdf_file_id,
-            timestamp=datetime.datetime.now())
+            timestamp=datetime.datetime.now(),
+            status_name="completed")
         else:
             bot.send_message(message.chat.id, "Не удалось конвертировать файл.")
-
-            
-
-        
-        
+            save_info_db(
+                user_id=user_id,
+                username=username,
+                original_file_id=original_file_id,
+                pdf_file_id=None,
+                timestamp=datetime.datetime.now(),
+                status_name="failed"
+            )
         remove_file(docx_path)
         remove_file(pdf_path)
 

@@ -1,4 +1,16 @@
 services:
+
+  admin:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/${POSTGRES_DB}
+    command: python db_admin.py
+    entrypoint: []
+    depends_on:
+      postgres:
+        condition: service_healthy
   postgres:
     image: postgres:18.1-alpine
     container_name: bot-db
