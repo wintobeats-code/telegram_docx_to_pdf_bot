@@ -1,10 +1,9 @@
-"""инициализация таблиц в бд"""
-"""Работа с базой данных: Unit of Work, репозиторий и бизнес-функции"""
+"""Работа с базой данных"""
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from typing import Optional
 from sqlalchemy.orm import Session
-from logging import info, error
+from logging import info
 import datetime
 from db_models import Base
 from db_models import User, Conversion, ConversionStatus
@@ -13,15 +12,20 @@ from db_sessions import engine
 
 
 class AbstractRepository(ABC):
+    """Абстрактный репозиторий для работы с данными."""
     @abstractmethod
-    def add(self, obj): ...
+    def add(self, obj):
+        """Добавить объект в сессию"""
     @abstractmethod
-    def get_by_telegram_id(self, telegram_id: int) -> Optional[User]: ...
+    def get_by_telegram_id(self, telegram_id: int) -> Optional[User]:
+        """Получить пользователя по telegram_id"""
     @abstractmethod
-    def get_status_by_name(self, name: str) -> Optional[ConversionStatus]: ...
+    def get_status_by_name(self, name: str) -> Optional[ConversionStatus]:
+        """Получить статус по имени"""
 
 
 class SqlAlchemyRepository(AbstractRepository):
+    """Реализация репозитория"""
     def __init__(self, session: Session):
         self.session = session
 
@@ -36,6 +40,7 @@ class SqlAlchemyRepository(AbstractRepository):
 
 
 class UnitOfWork:
+    """Unit of Work для управления транзакциями"""
     def __init__(self, session_factory=sessionlocal):
         self.session_factory = session_factory
         self.session: Optional[Session] = None
@@ -88,6 +93,7 @@ def save_info_db(
     timestamp: datetime.datetime,
     status_name: str
 ):
+    """Сохраняет информацию о конвертации в базу данных"""
     uow = UnitOfWork()
     with uow():
         user = uow.repo.get_by_telegram_id(user_id)

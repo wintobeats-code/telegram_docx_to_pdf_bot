@@ -20,7 +20,7 @@ jobs:
           cache: "pip"
       
       - name: Install dependencies
-        run: pip install pytelegrambotapi python-dotenv sqlalchemy alembic
+        run: pip install flask flask-admin pytelegrambotapi python-dotenv sqlalchemy alembic
       
       - name: Install pylint
         run: pip install pylint
