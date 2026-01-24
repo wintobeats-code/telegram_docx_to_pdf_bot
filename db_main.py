@@ -8,8 +8,6 @@ from sqlalchemy.orm import Session
 from db_models import Base, User, Conversion, ConversionStatus
 from db_sessions import sessionlocal, engine
 
-# pylint: disable=too-many-arguments,too-many-positional-arguments
-
 
 class AbstractRepository(ABC):
     """Абстрактный репозиторий для работы с данными."""
@@ -38,7 +36,7 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_status_by_name(self, name: str) -> Optional[ConversionStatus]:
         return self.session.query(ConversionStatus).filter_by(status_name=name).first()
 
-
+# pylint: disable=too-many-arguments,too-many-positional-arguments
 class UnitOfWork:
     """Unit of Work для управления транзакциями"""
     def __init__(self, session_factory=sessionlocal):
