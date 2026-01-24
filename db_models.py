@@ -33,7 +33,7 @@ class Conversion(Base):
 
     def __str__(self):
         """Имя статуса в строку для Flask Admin"""
-        return self.status_name
+        return self.status.status_name
 
 
 class ConversionStatus(Base):

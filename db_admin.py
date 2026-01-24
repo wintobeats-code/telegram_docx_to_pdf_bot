@@ -6,6 +6,8 @@ from db_models import User, Conversion, ConversionStatus
 from db_sessions import sessionlocal
 
 class SQLAlchemySession:
+    """Обёртка над сессией SQLAlchemy для совместимости с Flask-Admin"""
+
     def __init__(self, sessionmaker):
         """сессия"""
         self.sessionmaker = sessionmaker

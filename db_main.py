@@ -1,14 +1,12 @@
 """Работа с базой данных"""
+import datetime
+from logging import info
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
 from typing import Optional
 from sqlalchemy.orm import Session
-from logging import info
-import datetime
-from db_models import Base
-from db_models import User, Conversion, ConversionStatus
-from db_sessions import sessionlocal
-from db_sessions import engine
+from db_models import Base, User, Conversion, ConversionStatus
+from db_sessions import sessionlocal, engine
 
 
 class AbstractRepository(ABC):
@@ -84,6 +82,7 @@ def intermediate_status(user_id: int, original_file_id: str, status_name: str) -
         uow.repo.add(conversion)
         return conversion.id
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments
 
 def save_info_db(
     user_id: int,
