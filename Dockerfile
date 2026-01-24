@@ -22,4 +22,3 @@ RUN uv sync --no-dev --locked --no-editable --python python3.14
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-
