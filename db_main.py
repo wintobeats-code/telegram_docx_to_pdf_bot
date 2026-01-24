@@ -36,8 +36,7 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_status_by_name(self, name: str) -> Optional[ConversionStatus]:
         return self.session.query(ConversionStatus).filter_by(status_name=name).first()
 
-# pylint: disable=too-many-arguments,too-many-positional-arguments
-class UnitOfWork:
+# pylint: disable=too-few-public-methodsclass UnitOfWork:
     """Unit of Work для управления транзакциями"""
     def __init__(self, session_factory=sessionlocal):
         self.session_factory = session_factory
@@ -82,6 +81,7 @@ def intermediate_status(user_id: int, original_file_id: str, status_name: str) -
         uow.repo.add(conversion)
         return conversion.id
 # pylint: disable=too-many-arguments,too-many-positional-arguments
+
 def save_info_db(
     user_id: int,
     username: str | None,
