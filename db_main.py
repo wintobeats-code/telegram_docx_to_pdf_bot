@@ -81,7 +81,7 @@ def intermediate_status(user_id: int, original_file_id: str, status_name: str) -
         )
         uow.repo.add(conversion)
         return conversion.id
-
+# pylint: disable=too-many-arguments,too-many-positional-arguments
 def save_info_db(
     user_id: int,
     username: str | None,
