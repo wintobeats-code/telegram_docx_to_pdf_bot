@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from db_models import Base, User, Conversion, ConversionStatus
 from db_sessions import sessionlocal, engine
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments
+
 
 class AbstractRepository(ABC):
     """Абстрактный репозиторий для работы с данными."""
@@ -81,8 +83,6 @@ def intermediate_status(user_id: int, original_file_id: str, status_name: str) -
         )
         uow.repo.add(conversion)
         return conversion.id
-
-# pylint: disable=too-many-arguments,too-many-positional-arguments
 
 def save_info_db(
     user_id: int,
