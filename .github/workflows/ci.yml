@@ -28,6 +28,9 @@ jobs:
       - name: Run pylint
         run: pylint *.py
 
+      - name: Run Tests
+        run: bot_tests.py
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
