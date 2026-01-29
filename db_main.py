@@ -14,9 +14,11 @@ class AbstractRepository(ABC):
     @abstractmethod
     def add(self, obj):
         """Добавить объект в сессию"""
+
     @abstractmethod
     def get_by_telegram_id(self, telegram_id: int) -> Optional[User]:
         """Получить пользователя по telegram_id"""
+
     @abstractmethod
     def get_status_by_name(self, name: str) -> Optional[ConversionStatus]:
         """Получить статус по имени"""
@@ -36,7 +38,9 @@ class SqlAlchemyRepository(AbstractRepository):
     def get_status_by_name(self, name: str) -> Optional[ConversionStatus]:
         return self.session.query(ConversionStatus).filter_by(status_name=name).first()
 
-# pylint: disable=too-few-public-methodsclass UnitOfWork:
+
+# pylint: disable=too-few-public-methods
+class UnitOfWork:
     """Unit of Work для управления транзакциями"""
     def __init__(self, session_factory=sessionlocal):
         self.session_factory = session_factory
@@ -80,8 +84,9 @@ def intermediate_status(user_id: int, original_file_id: str, status_name: str) -
         )
         uow.repo.add(conversion)
         return conversion.id
-# pylint: disable=too-many-arguments,too-many-positional-arguments
 
+
+# pylint: disable=too-many-arguments,too-many-positional-arguments
 def save_info_db(
     user_id: int,
     username: str | None,
@@ -117,5 +122,6 @@ def save_info_db(
         )
         uow.repo.add(conversion)
         info("Запись сохранена в БД")
+
 
 Base.metadata.create_all(bind=engine)
