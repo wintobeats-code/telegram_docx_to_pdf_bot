@@ -1,9 +1,27 @@
 """Файл для панели админа БД"""
-from flask import Flask
+from flask import Flask, request, Response
 from flask_admin import Admin
+from flask_admin.base import AdminIndexView
 from flask_admin.contrib.sqla import ModelView
+from werkzeug.security import check_password_hash, generate_password_hash
 from db_models import User, Conversion, ConversionStatus
 from db_sessions import sessionlocal
+import os
+
+ADMIN_USERNAME = os.getenv('ADMIN_USERNAME')
+ADMIN_PASSWORD_HASH = os.getenv('ADMIN_PASSWORD')
+
+class Authentication(AdminIndexView):
+    """Защищённая главная страница админки"""
+    def is_accessible(self):
+        auth = request.authorization
+        if not auth:
+            return False
+        if auth.username != ADMIN_USERNAME:
+            return False
+        if not check_password_hash(ADMIN_PASSWORD_HASH, auth.password):
+            return False
+        return True
 
 class SQLAlchemySession:
     """Обёртка над сессией SQLAlchemy для совместимости с Flask-Admin"""
