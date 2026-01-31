@@ -10,7 +10,8 @@
   — ID пользователя и файла  
   — статус (`pending`, `processing`, `completed`, `failed`)  
   — временная метка
-- Поддержка многопользовательского режима.
+- Поддержка многопользовательского режима
+- Просмотр содержимого БД и редактирование на странице
 
 ## Запуск в Docker:
 - Создайте .env файл и внесите в него определение переменных окружения:
@@ -18,6 +19,9 @@
   - POSTGRES_PASSWORD - пароль от БД
   - POSTGRES_USER - имя пользователя БД
   - POSTGRES_DB - название БД
+  - ADMIN_USERNAME - имя админа для авторизации на странице БД
+  - ADMIN_PASSWORD - пароль для авторизации на странице БД
+
 - запустите: ``docker-compose up --build``
 
 ## Технологии:
@@ -27,6 +31,7 @@
   - Telegram Bot API (pyTelegramBotAPI)
   - SQLAlchemy + Alembic (ORM и миграции)
   - python-dotenv
+  - Flask + Flask-Admin
 - СУБД PostgreSQL
 - Docker
 
